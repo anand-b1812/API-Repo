@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:twilio="http://www.mulesoft.org/schema/mule/twilio"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/twilio http://www.mulesoft.org/schema/mule/twilio/current/mule-twilio.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<http:listener-config name="HTTPS" doc:name="HTTP Listener config" doc:id="f7dfabec-18e6-4b0a-bef6-c3f9c252948a" >
+		<http:listener-connection host="0.0.0.0" port="8082" protocol="HTTPS">
+			<tls:context >
+				<tls:key-store type="jks" path="server-keystore.jks" alias="mule-server" keyPassword="serPassword" password="serPassword" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<flow name="1-way-sslFlow" doc:id="10d34c17-05ae-40f6-9ca6-7d1f1c18bdf3" >
+		<http:listener doc:name="Listener" doc:id="5331c704-1017-4526-829a-2ec7ff53a6d8" config-ref="HTTPS" path="/oneWaySSL"/>
+		<ee:transform doc:name="Transform Message" doc:id="652f5279-0319-4de1-8fae-69fbae650335" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"One Way SSL Handshake was successful."]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
